@@ -7,11 +7,19 @@ public class Handler : HandlerBase
 {
     protected override string HandleRequest(string body, RequestData? requestData)
     {
-        return "Hi!";
+        return Settings.TgBodId;
     }
 }
 
 #region Base
+
+public static class Settings
+{
+    public static string TgBodId => Get("TgBotId");
+    public static string TgBodToken => Get("Token");
+
+    private static string Get(string name) => Environment.GetEnvironmentVariable(name)!;
+}
 
 public abstract class HandlerBase
 {
