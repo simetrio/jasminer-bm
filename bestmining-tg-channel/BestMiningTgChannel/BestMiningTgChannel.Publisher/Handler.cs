@@ -16,7 +16,7 @@ public class Handler : HandlerBase
 public static class Settings
 {
     public static string TgBodId => Get("TgBotId");
-    public static string TgBodToken => Get("Token");
+    public static string TgBodToken => Get("TgBotToken");
 
     private static string Get(string name) => Environment.GetEnvironmentVariable(name)!;
 }
