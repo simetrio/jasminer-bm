@@ -60,13 +60,15 @@ public static class ChartSender
         sb.AppendLine();
         sb.AppendLine("⚡️ Доходность майнинга за 24 часа без учета ээ ⚡️");
 
-        foreach (var maningGroup in minings.GroupBy(x => x.HashRate))
+        foreach (var maningGroup in minings.GroupBy(x => x.Algorithm))
         {
+            sb.AppendLine();
+            sb.AppendLine($"🪙 {maningGroup.Key} - доход на {maningGroup.First().HashRate}");
             sb.AppendLine();
           
             foreach (var mining in maningGroup.OrderByDescending(x => x.Value))
             {
-                sb.AppendLine($"🪙 {mining.Currency} - {mining.Value.ToString("C", CultureInfo.CreateSpecificCulture("en-US"))} на {mining.HashRate}");
+                sb.AppendLine($"{mining.Currency} - {mining.Value.ToString("C", CultureInfo.CreateSpecificCulture("en-US"))}");
             }
         }
 
@@ -108,17 +110,17 @@ public static class ChartSender
         {
             "https://whattomine.com/coins/1-btc-sha-256?hr=100.0&p=3500.0&fee=0.0&cost=0.1&cost_currency=USD&hcost=0.0&span_br=1h&span_d=&commit=Calculate",
             "https://whattomine.com/coins/193-bch-sha-256?hr=100.0&p=3500.0&fee=0.0&cost=0.1&cost_currency=USD&hcost=0.0&span_br=&span_d=&commit=Calculate",
-            "https://whattomine.com/coins/162-etc-etchash?hr=1000&p=390.0&fee=0.0&cost=0.1&cost_currency=USD&hcost=0.0&span_br=&span_d=24&commit=Calculate",
             "https://whattomine.com/coins/353-ethw-ethash?hr=1000&p=390.0&fee=0.0&cost=0.1&cost_currency=USD&hcost=0.0&span_br=1h&span_d=24&commit=Calculate",
             "https://whattomine.com/coins/361-octa-ethash?hr=1000&p=390.0&fee=0.0&cost=0.1&cost_currency=USD&hcost=0.0&span_br=&span_d=24&commit=Calculate",
             "https://whattomine.com/coins/398-lrs-ethash?hr=1000&p=390.0&fee=0.0&cost=0.1&cost_currency=USD&hcost=0.0&span_br=&span_d=24&commit=Calculate",
             "https://whattomine.com/coins/373-cau-ethash?hr=1000&p=390.0&fee=0.0&cost=0.1&cost_currency=USD&hcost=0.0&span_br=&span_d=24&commit=Calculate",
             "https://whattomine.com/coins/378-btn-ethash?hr=1000&p=390.0&fee=0.0&cost=0.1&cost_currency=USD&hcost=0.0&span_br=&span_d=24&commit=Calculate",
             "https://whattomine.com/coins/377-xpb-ethash?hr=1000&p=390.0&fee=0.0&cost=0.1&cost_currency=USD&hcost=0.0&span_br=&span_d=24&commit=Calculate",
-            "https://whattomine.com/coins/382-egaz-etchash?hr=1000&p=390.0&fee=0.0&cost=0.1&cost_currency=USD&hcost=0.0&span_br=&span_d=24&commit=Calculate",
             "https://whattomine.com/coins/393-dogether-ethash?hr=1000&p=390.0&fee=0.0&cost=0.1&cost_currency=USD&hcost=0.0&span_br=&span_d=24&commit=Calculate",
             "https://whattomine.com/coins/318-qkc-ethash?hr=1000&p=390.0&fee=3.0&cost=0.1&cost_currency=USD&hcost=0.0&span_br=&span_d=24&commit=Calculate",
             "https://whattomine.com/coins/283-clo-ethash?hr=1000&p=390.0&fee=0.0&cost=0.1&cost_currency=USD&hcost=0.0&span_br=&span_d=24&commit=Calculate",
+            "https://whattomine.com/coins/162-etc-etchash?hr=1000&p=390.0&fee=0.0&cost=0.1&cost_currency=USD&hcost=0.0&span_br=&span_d=24&commit=Calculate",
+            "https://whattomine.com/coins/382-egaz-etchash?hr=1000&p=390.0&fee=0.0&cost=0.1&cost_currency=USD&hcost=0.0&span_br=&span_d=24&commit=Calculate",
             "https://whattomine.com/coins/4-ltc-scrypt?hr=10&p=2080.0&fee=0.0&cost=0.1&cost_currency=USD&hcost=0.0&span_br=&span_d=&commit=Calculate",
             "https://whattomine.com/coins/6-doge-scrypt?hr=10&p=2080.0&fee=0.0&cost=0.1&cost_currency=USD&hcost=0.0&span_br=&span_d=24&commit=Calculate",
             "https://whattomine.com/coins/34-dash-x11?hr=1000.0&p=2850.0&fee=0.0&cost=0.1&cost_currency=USD&hcost=0.0&span_br=&span_d=24&commit=Calculate",
@@ -139,12 +141,14 @@ public static class ChartSender
             var value = GetString(html, ["Please note that calculations", "Day", "$"]).Replace(",", "");
             var hashRateValue = GetString(html, ["id=\"hr\"", "value", "\""], "\"");
             var hashRate = GetString(html, ["id=\"hr\"", "value", "span", ">"]);
+            var algorithm = GetString(html, ["Algorithm", "dd", ">"]);
 
             yield return new Mining
             {
                 Currency = name,
                 Value = decimal.Parse(value, CultureInfo.InvariantCulture),
                 HashRate = $"{hashRateValue} {hashRate}",
+                Algorithm = algorithm,
             };
         }
     }
@@ -176,6 +180,7 @@ public static class ChartSender
         public string Currency { get; set; }
         public decimal Value { get; set; }
         public string HashRate { get; set; }
+        public string Algorithm { get; set; }
     }
 }
 
