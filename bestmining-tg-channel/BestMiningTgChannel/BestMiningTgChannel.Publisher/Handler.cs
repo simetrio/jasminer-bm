@@ -60,10 +60,14 @@ public static class ChartSender
         sb.AppendLine();
         sb.AppendLine("⚡️ Доходность майнинга за 24 часа без учета ээ ⚡️");
 
-        foreach (var mining in minings)
+        foreach (var maningGroup in minings.GroupBy(x => x.HashRate))
         {
             sb.AppendLine();
-            sb.AppendLine($"🪙 {mining.Currency} - {mining.Value.ToString("C", CultureInfo.CreateSpecificCulture("en-US"))} на {mining.HashRate}");
+          
+            foreach (var mining in maningGroup.OrderByDescending(x => x.Value))
+            {
+                sb.AppendLine($"🪙 {mining.Currency} - {mining.Value.ToString("C", CultureInfo.CreateSpecificCulture("en-US"))} на {mining.HashRate}");
+            }
         }
 
         return sb.ToString();
@@ -84,7 +88,7 @@ public static class ChartSender
         foreach (var currency in currencies)
         {
             var block = html.Substring(html.IndexOf($">{currency}<"));
-          
+
             var name = GetString(block, [">"]);
             var value = GetString(block, ["$"]).Replace(",", "");
             var percent = GetString(block, ["data-24h=\"true\"", ":"], "}").Replace(",", "");
