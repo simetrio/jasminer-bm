@@ -10,8 +10,39 @@ public class Handler : HandlerBase
 {
     protected override string HandleRequest(string body, RequestData? requestData)
     {
-        Telegram.SendMessage();
+        ChartSender.Send();
         return "Ok";
+    }
+}
+
+public static class ChartSender
+{
+    public static string[] _imgs =
+    {
+        "https://jasminer-bm.ru/img/tg-channel/tg-channel-chart-1.jpg",
+        "https://jasminer-bm.ru/img/tg-channel/tg-channel-chart-2.jpg",
+        "https://jasminer-bm.ru/img/tg-channel/tg-channel-chart-3.jpg",
+    };
+
+    public static void Send()
+    {
+        var message = MessageTemplate.Format(@"Temp
+as wow
+
+and get");
+        var img = _imgs[DateTime.Now.Ticks % _imgs.Length];
+
+        Telegram.SendMessage(message, img);
+    }
+}
+
+public static class MessageTemplate
+{
+    public static string Format(string message)
+    {
+        return @$"{message}
+
+👉 [K1Pool](https://k1pool.com/invite/dd03779e65) \| [ByBit](https://www.bybit.com/invite?ref=ENN1VM8) \| [Прайс](https://t.me/BestMiningRu/8) \| [Заказ](https://t.me/BestMiningManager)";
     }
 }
 
@@ -26,15 +57,12 @@ public static class Telegram
         _botClient = new Lazy<TelegramBotClient>(() => new TelegramBotClient(Settings.TgBotToken));
     }
 
-    public static void SendMessage()
+    public static void SendMessage(string message, string img)
     {
         _botClient.Value.SendPhotoAsync(
             chatId: Settings.TgChannelId,
-            photo: InputFile.FromUri("https://jasminer-bm.ru/img/tg-channel/tg-channel-chart-1.jpg"),
-            caption: @"Trying *all the parameters* of `sendMessage` method
-            and wow get cool
-            
-            maybe yes",
+            photo: InputFile.FromUri(img),
+            caption: message,
             parseMode: ParseMode.MarkdownV2
         )
         .GetAwaiter()
