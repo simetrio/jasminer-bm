@@ -1,5 +1,5 @@
 function getTgModalName() {
-    return 'tg-banner-closed-2-' + new Date().getFullYear() + new Date().getMonth() + (new Date().getDate() % 5);
+    return 'tg-banner-closed-3-' + new Date().getFullYear() + new Date().getMonth() + (new Date().getDate() % 5);
 }
 
 function openTgModal() {
