@@ -82,30 +82,30 @@
                 </div>
                 <div class="col-md-8">
                     <div class="card-body">
-                        <h1 class="card-title">Jasminer X16-Q 2050 MH/s</h5>
-                            <p class="card-text">
-                            <dl class="row mt-4">
-                                <dt class="col-sm-3">Производительность</dt>
-                                <dd class="col-sm-9">2050 MH/s</dd>
-                                <dt class="col-sm-3">Память</dt>
-                                <dd class="col-sm-9">8 Гб</dd>
-                                <dt class="col-sm-3">Потребление</dt>
-                                <dd class="col-sm-9">520 Вт</dd>
-                                <dt class="col-sm-3">Алгоритм</dt>
-                                <dd class="col-sm-9">ETCHASH/ETHASH</dd>
-                                <dt class="col-sm-3">Уровень шума</dt>
-                                <dd class="col-sm-9">40 Дб</dd>
-                            </dl>
-                            </p>
-                            <div class="row mt-4">
-                                <div class="col-lg-6">
-                                    <div class="h3">410 000 ₽ (4 200 $)</div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <a href="https://t.me/BestMiningManager" class="btn btn-primary px-5"
-                                        data-mdb-ripple-init target="_blank">Заказать</a>
-                                </div>
+                        <h1 class="card-title">Jasminer X16-Q 2050 MH/s</h1>
+                        <p class="card-text">
+                        <dl class="row mt-4">
+                            <dt class="col-sm-3">Производительность</dt>
+                            <dd class="col-sm-9">2050 MH/s</dd>
+                            <dt class="col-sm-3">Память</dt>
+                            <dd class="col-sm-9">8 Гб</dd>
+                            <dt class="col-sm-3">Потребление</dt>
+                            <dd class="col-sm-9">520 Вт</dd>
+                            <dt class="col-sm-3">Алгоритм</dt>
+                            <dd class="col-sm-9">ETCHASH/ETHASH</dd>
+                            <dt class="col-sm-3">Уровень шума</dt>
+                            <dd class="col-sm-9">40 Дб</dd>
+                        </dl>
+                        </p>
+                        <div class="row mt-4">
+                            <div class="col-lg-6">
+                                <div class="h3">410 000 ₽ (4 200 $)</div>
                             </div>
+                            <div class="col-lg-6">
+                                <a href="https://t.me/BestMiningManager" class="btn btn-primary px-5"
+                                    data-mdb-ripple-init target="_blank">Заказать</a>
+                            </div>
+                        </div>
 
                     </div>
                 </div>
@@ -203,11 +203,51 @@
             </div>
         </div>
     </div>
+
+    <!-- Button trigger modal -->
+    <button id="show-tg-modal" type="button" class="btn btn-primary d-none" data-mdb-ripple-init data-mdb-modal-init
+        data-mdb-target="#tgModal">
+        Показать Telegram баннер
+    </button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="tgModal" tabindex="-1" aria-labelledby="tgModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="tgModalLabel">Подпишись на нас в Telegram</h5>
+                    <button type="button" class="btn-close" data-mdb-ripple-init data-mdb-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="card bg-dark text-white" style="height: 500px; overflow: hidden;">
+                        <a class="nav-link" href="https://t.me/BestMiningRu" target="_blank">
+                            <img src="img/tg-banner.jpeg" class="card-img" alt="Stony Beach" />
+                            <div class="mask" style="background-color: hsla(0, 0%, 0%, 0.8)"></div>
+                            <div class="card-img-overlay mt-4 pt-4">
+                                <div class="card-title text-center display-3">Подпишись на нас в Telegram</div>
+                                <p class="card-text text-center h3">
+                                    Чтобы поймать лучшую цену на оборудование
+                                </p>
+                                <p class="card-text text-center h3 mt-5">
+                                    <i class="fab fa-telegram fa-5x"></i>
+                                </p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- End your project here-->
 
     <!-- MDB -->
     <script type="text/javascript"
         src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/7.2.0/mdb.umd.min.js"></script>
+
+    <!-- Site -->
+    <script type="text/javascript" src="js/site.js"></script>
+    <script> openTgModal(); </script>
 
     <!-- Yandex.Metrika counter -->
     <script type="text/javascript">
