@@ -1,5 +1,8 @@
 ﻿using System.Text.Json;
 using System;
+using Telegram.Bot;
+using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types;
 
 namespace BestMiningTgChannel.Publisher;
 
@@ -7,16 +10,44 @@ public class Handler : HandlerBase
 {
     protected override string HandleRequest(string body, RequestData? requestData)
     {
-        return Settings.TgBodId;
+        Telegram.SendMessage();
+        return "Ok";
     }
 }
+
+#region Telegram
+
+public static class Telegram
+{
+    private static Lazy<TelegramBotClient> _botClient;
+
+    static Telegram()
+    {
+        _botClient = new Lazy<TelegramBotClient>(() => new TelegramBotClient(Settings.TgBotToken));
+    }
+
+    public static void SendMessage()
+    {
+        _botClient.Value.SendTextMessageAsync(
+            chatId: Settings.TgChannelId,
+            text: "Trying *all the parameters* of `sendMessage` method",
+            parseMode: ParseMode.MarkdownV2,
+            disableNotification: true
+        )
+        .GetAwaiter()
+        .GetResult();
+    }
+}
+
+#endregion
 
 #region Base
 
 public static class Settings
 {
     public static string TgBodId => Get("TgBotId");
-    public static string TgBodToken => Get("TgBotToken");
+    public static string TgBotToken => Get("TgBotToken");
+    public static string TgChannelId => Get("TgChannelId");
 
     private static string Get(string name) => Environment.GetEnvironmentVariable(name)!;
 }
