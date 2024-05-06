@@ -17,6 +17,8 @@ public class Handler : HandlerBase
     }
 }
 
+#region ChartSender
+
 public static class ChartSender
 {
     public static string[] _imgs =
@@ -184,6 +186,10 @@ public static class ChartSender
     }
 }
 
+#endregion
+
+#region Common
+
 public static class MessageTemplate
 {
     public static string Format(string message)
@@ -206,6 +212,8 @@ public static class MessageTemplate
         ;
     }
 }
+
+#endregion
 
 #region Telegram
 
