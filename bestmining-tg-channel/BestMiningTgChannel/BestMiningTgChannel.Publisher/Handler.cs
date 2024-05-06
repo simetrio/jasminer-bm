@@ -8,29 +8,6 @@ using System.Globalization;
 
 namespace BestMiningTgChannel.Publisher;
 
-// BTC
-// BCH
-
-// ETC
-// ETHW
-// OctaSpace
-// Larissa
-// Canxium
-// Bitnet Money
-// PowBlocks
-// MetaChain
-// Etica
-// Dogether
-// QuarkChain
-// Calisto
-
-// Litecoin
-// Dogecoin
-
-// Dash
-
-// Kaspa
-
 public class Handler : HandlerBase
 {
     protected override string HandleRequest(string body, RequestData? requestData)
@@ -126,8 +103,22 @@ public static class ChartSender
         var currencies = new[]
         {
             "https://whattomine.com/coins/1-btc-sha-256?hr=100.0&p=3500.0&fee=0.0&cost=0.1&cost_currency=USD&hcost=0.0&span_br=1h&span_d=&commit=Calculate",
+            "https://whattomine.com/coins/193-bch-sha-256?hr=100.0&p=3500.0&fee=0.0&cost=0.1&cost_currency=USD&hcost=0.0&span_br=&span_d=&commit=Calculate",
             "https://whattomine.com/coins/162-etc-etchash?hr=1000&p=390.0&fee=0.0&cost=0.1&cost_currency=USD&hcost=0.0&span_br=&span_d=24&commit=Calculate",
             "https://whattomine.com/coins/353-ethw-ethash?hr=1000&p=390.0&fee=0.0&cost=0.1&cost_currency=USD&hcost=0.0&span_br=1h&span_d=24&commit=Calculate",
+            "https://whattomine.com/coins/361-octa-ethash?hr=1000&p=390.0&fee=0.0&cost=0.1&cost_currency=USD&hcost=0.0&span_br=&span_d=24&commit=Calculate",
+            "https://whattomine.com/coins/398-lrs-ethash?hr=1000&p=390.0&fee=0.0&cost=0.1&cost_currency=USD&hcost=0.0&span_br=&span_d=24&commit=Calculate",
+            "https://whattomine.com/coins/373-cau-ethash?hr=1000&p=390.0&fee=0.0&cost=0.1&cost_currency=USD&hcost=0.0&span_br=&span_d=24&commit=Calculate",
+            "https://whattomine.com/coins/378-btn-ethash?hr=1000&p=390.0&fee=0.0&cost=0.1&cost_currency=USD&hcost=0.0&span_br=&span_d=24&commit=Calculate",
+            "https://whattomine.com/coins/377-xpb-ethash?hr=1000&p=390.0&fee=0.0&cost=0.1&cost_currency=USD&hcost=0.0&span_br=&span_d=24&commit=Calculate",
+            "https://whattomine.com/coins/382-egaz-etchash?hr=1000&p=390.0&fee=0.0&cost=0.1&cost_currency=USD&hcost=0.0&span_br=&span_d=24&commit=Calculate",
+            "https://whattomine.com/coins/393-dogether-ethash?hr=1000&p=390.0&fee=0.0&cost=0.1&cost_currency=USD&hcost=0.0&span_br=&span_d=24&commit=Calculate",
+            "https://whattomine.com/coins/318-qkc-ethash?hr=1000&p=390.0&fee=3.0&cost=0.1&cost_currency=USD&hcost=0.0&span_br=&span_d=24&commit=Calculate",
+            "https://whattomine.com/coins/283-clo-ethash?hr=1000&p=390.0&fee=0.0&cost=0.1&cost_currency=USD&hcost=0.0&span_br=&span_d=24&commit=Calculate",
+            "https://whattomine.com/coins/4-ltc-scrypt?hr=10&p=2080.0&fee=0.0&cost=0.1&cost_currency=USD&hcost=0.0&span_br=&span_d=&commit=Calculate",
+            "https://whattomine.com/coins/6-doge-scrypt?hr=10&p=2080.0&fee=0.0&cost=0.1&cost_currency=USD&hcost=0.0&span_br=&span_d=24&commit=Calculate",
+            "https://whattomine.com/coins/34-dash-x11?hr=1000.0&p=2850.0&fee=0.0&cost=0.1&cost_currency=USD&hcost=0.0&span_br=&span_d=24&commit=Calculate",
+            "https://whattomine.com/coins/352-kas-kheavyhash?hr=1&p=3400.0&fee=5.0&cost=0.1&cost_currency=USD&hcost=0.0&span_br=&span_d=24&commit=Calculate",
         };
 
         foreach (var currency in currencies)
