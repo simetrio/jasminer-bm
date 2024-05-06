@@ -107,19 +107,10 @@ public static class ChartSender
         foreach (var currency in currencies)
         {
             var block = html.Substring(html.IndexOf($">{currency}<"));
-
-            var name = block.Substring(block.IndexOf(">") + 1);
-            name = name.Substring(0, name.IndexOf("<"));
-            name = name.Trim();
-
-            var value = block.Substring(block.IndexOf("$") + 1);
-            value = value.Substring(0, value.IndexOf("<"));
-            value = value.Trim().Replace(",", "");
-
-            var percent = block.Substring(block.IndexOf("data-24h=\"true\""));
-            percent = percent.Substring(percent.IndexOf(":") + 1);
-            percent = percent.Substring(0, percent.IndexOf("}"));
-            percent = percent.Trim();
+          
+            var name = GetString(block, [">"]);
+            var value = GetString(block, ["$"]).Replace(",", "");
+            var percent = GetString(block, ["data-24h=\"true\"", ":"], "}").Replace(",", "");
 
             yield return new Chart
             {
@@ -149,29 +140,10 @@ public static class ChartSender
                         .Replace("\n", "")
                         ;
 
-            var block = html.Substring(html.IndexOf($"<h1>"));
-
-            var name = block.Substring(block.IndexOf(">") + 1);
-            name = name.Substring(0, name.IndexOf("<"));
-            name = name.Trim();
-
-            var value = block.Substring(block.IndexOf("Please note that calculations"));
-            value = value.Substring(value.IndexOf("Day"));
-            value = value.Substring(value.IndexOf("$") + 1);
-            value = value.Substring(0, value.IndexOf("<"));
-            value = value.Trim().Replace(",", "");
-
-            var hashRate = block.Substring(block.IndexOf("id=\"hr\""));
-            hashRate = hashRate.Substring(hashRate.IndexOf("value"));
-            hashRate = hashRate.Substring(hashRate.IndexOf("\"") + 1);
-           
-            var hashRateValue = hashRate.Substring(0, hashRate.IndexOf("\""));
-            hashRateValue = hashRateValue.Trim();
-
-            hashRate = hashRate.Substring(hashRate.IndexOf("span"));
-            hashRate = hashRate.Substring(hashRate.IndexOf(">") + 1);
-            hashRate = hashRate.Substring(0, hashRate.IndexOf("<"));
-            hashRate = hashRate.Trim();
+            var name = GetString(html, ["<h1>"]);
+            var value = GetString(html, ["Please note that calculations", "Day", "$"]).Replace(",", "");
+            var hashRateValue = GetString(html, ["id=\"hr\"", "value", "\""], "\"");
+            var hashRate = GetString(html, ["id=\"hr\"", "value", "span", ">"]);
 
             yield return new Mining
             {
@@ -180,6 +152,21 @@ public static class ChartSender
                 HashRate = $"{hashRateValue} {hashRate}",
             };
         }
+    }
+
+    private static string GetString(string str, string[] path, string? end = "<")
+    {
+        foreach (var item in path)
+        {
+            str = str.Substring(str.IndexOf(item) + item.Length);
+        }
+
+        if (end == null)
+        {
+            return str;
+        }
+
+        return str.Substring(0, str.IndexOf(end)).Trim();
     }
 
     private class Chart
