@@ -28,11 +28,14 @@ public static class Telegram
 
     public static void SendMessage()
     {
-        _botClient.Value.SendTextMessageAsync(
+        _botClient.Value.SendPhotoAsync(
             chatId: Settings.TgChannelId,
-            text: "Trying *all the parameters* of `sendMessage` method",
-            parseMode: ParseMode.MarkdownV2,
-            disableNotification: true
+            photo: InputFile.FromUri("https://jasminer-bm.ru/img/tg-channel/tg-channel-chart-1.jpg"),
+            caption: @"Trying *all the parameters* of `sendMessage` method
+            and wow get cool
+            
+            maybe yes",
+            parseMode: ParseMode.MarkdownV2
         )
         .GetAwaiter()
         .GetResult();
