@@ -3,6 +3,8 @@ using System;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types;
+using System.Text;
+using System.Globalization;
 
 namespace BestMiningTgChannel.Publisher;
 
@@ -26,13 +28,59 @@ public static class ChartSender
 
     public static void Send()
     {
-        var message = MessageTemplate.Format(@"Temp
-as wow
+        if (DateTime.UtcNow.Hour != 4)
+        {
+            return;
+        }
 
-and get");
+        var charts = LoadCharts();
+
+        var message = MessageTemplate.Format(BuildMessage(charts));
         var img = _imgs[DateTime.Now.Ticks % _imgs.Length];
 
         Telegram.SendMessage(message, img);
+    }
+
+    private static string BuildMessage(Chart[] charts)
+    {
+        var sb = new StringBuilder();
+
+        sb.AppendLine("⚡️ Изменение курсов криптовалют ⚡️");
+        sb.AppendLine();
+
+        foreach (var chart in charts)
+        {
+            var upDown = chart.DiffPercent >= 0 ? "↗️" : "↘️";
+            sb.AppendLine($"{upDown} {chart.Currency} - {chart.Value.ToString("C", CultureInfo.CreateSpecificCulture("en-US"))}  ({chart.DiffPercent:P2})");
+        }
+
+        return sb.ToString();
+    }
+
+    private static Chart[] LoadCharts()
+    {
+        return new[]
+        {
+            new Chart
+            {
+                Currency = "Bitcoin",
+                Value = 65080.15m,
+                DiffPercent = 0.1476m,
+            },
+             new Chart
+            {
+                Currency = "Etc",
+                Value = 234.5m,
+                DiffPercent = -0.046m,
+            }
+        };
+    }
+
+    private class Chart
+    {
+        public string Currency { get; set; }
+        public decimal Value { get; set; }
+        public decimal DiffPercent { get; set; }
     }
 }
 
@@ -40,9 +88,20 @@ public static class MessageTemplate
 {
     public static string Format(string message)
     {
-        return @$"{message}
+        return @$"{Escape(message)}
 
 👉 [K1Pool](https://k1pool.com/invite/dd03779e65) \| [ByBit](https://www.bybit.com/invite?ref=ENN1VM8) \| [Прайс](https://t.me/BestMiningRu/8) \| [Заказ](https://t.me/BestMiningManager)";
+    }
+
+    private static string Escape(string message)
+    {
+        return message
+        .Replace("-", "\\-")
+        .Replace(".", "\\.")
+        .Replace("|", "\\|")
+        .Replace("(", "\\(")
+        .Replace(")", "\\)")
+        ;
     }
 }
 
