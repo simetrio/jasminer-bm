@@ -62,8 +62,6 @@ public static class ChartSender
         var message = MessageTemplate.Format(BuildMessage(charts, minings));
         var img = _imgs[DateTime.Now.Ticks % _imgs.Length];
 
-        System.IO.File.WriteAllText("/home/roman/message.txt", message);
-
         Telegram.SendMessage(message, img);
     }
 
@@ -141,8 +139,6 @@ public static class ChartSender
             "https://whattomine.com/coins/353-ethw-ethash?hr=1000&p=390.0&fee=0.0&cost=0.1&cost_currency=USD&hcost=0.0&span_br=1h&span_d=24&commit=Calculate",
         };
 
-        System.IO.File.WriteAllText("/home/roman/log.txt", "");
-
         foreach (var currency in currencies)
         {
             var html = new HttpClient()
@@ -153,23 +149,17 @@ public static class ChartSender
                         .Replace("\n", "")
                         ;
 
-            System.IO.File.WriteAllText("/home/roman/html.txt", html);
-
             var block = html.Substring(html.IndexOf($"<h1>"));
 
             var name = block.Substring(block.IndexOf(">") + 1);
             name = name.Substring(0, name.IndexOf("<"));
             name = name.Trim();
 
-            System.IO.File.AppendAllLines("/home/roman/log.txt", new[] { name });
-
             var value = block.Substring(block.IndexOf("Please note that calculations"));
             value = value.Substring(value.IndexOf("Day"));
             value = value.Substring(value.IndexOf("$") + 1);
             value = value.Substring(0, value.IndexOf("<"));
             value = value.Trim().Replace(",", "");
-
-            System.IO.File.AppendAllLines("/home/roman/log.txt", new[] { value });
 
             var hashRate = block.Substring(block.IndexOf("id=\"hr\""));
             hashRate = hashRate.Substring(hashRate.IndexOf("value"));
