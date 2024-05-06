@@ -28,12 +28,12 @@ public static class ChartSender
 
     public static void Send()
     {
-        if (DateTime.UtcNow.Hour != 4)
+        if (DateTime.UtcNow.Hour != Settings.ChartHour)
         {
             return;
         }
 
-        var charts = LoadCharts();
+        var charts = LoadCharts().ToArray();
 
         var message = MessageTemplate.Format(BuildMessage(charts));
         var img = _imgs[DateTime.Now.Ticks % _imgs.Length];
@@ -57,23 +57,42 @@ public static class ChartSender
         return sb.ToString();
     }
 
-    private static Chart[] LoadCharts()
+    private static IEnumerable<Chart> LoadCharts()
     {
-        return new[]
+        var html = new HttpClient()
+            .GetStringAsync("https://www.coingecko.com")
+            .GetAwaiter()
+            .GetResult()
+            .Replace("\r", "")
+            .Replace("\n", "")
+            ;
+
+        var currencies = new[] { "Bitcoin", "Ethereum" };
+
+        foreach (var currency in currencies)
         {
-            new Chart
+            var block = html.Substring(html.IndexOf($">{currency}<"));
+
+            var name = block.Substring(block.IndexOf(">") + 1);
+            name = name.Substring(0, name.IndexOf("<"));
+            name = name.Trim();
+
+            var value = block.Substring(block.IndexOf("$") + 1);
+            value = value.Substring(0, value.IndexOf("<"));
+            value = value.Trim().Replace(",", "");
+
+            var percent = block.Substring(block.IndexOf("data-24h=\"true\""));
+            percent = percent.Substring(percent.IndexOf(":") + 1);
+            percent = percent.Substring(0, percent.IndexOf("}"));
+            percent = percent.Trim();
+
+            yield return new Chart
             {
-                Currency = "Bitcoin",
-                Value = 65080.15m,
-                DiffPercent = 0.1476m,
-            },
-             new Chart
-            {
-                Currency = "Etc",
-                Value = 234.5m,
-                DiffPercent = -0.046m,
-            }
-        };
+                Currency = currency,
+                Value = decimal.Parse(value, CultureInfo.InvariantCulture),
+                DiffPercent = decimal.Parse(percent, CultureInfo.InvariantCulture) / 100m,
+            };
+        }
     }
 
     private class Chart
@@ -138,8 +157,10 @@ public static class Settings
     public static string TgBodId => Get("TgBotId");
     public static string TgBotToken => Get("TgBotToken");
     public static string TgChannelId => Get("TgChannelId");
+    public static int ChartHour => GetInt("ChartHour");
 
     private static string Get(string name) => Environment.GetEnvironmentVariable(name)!;
+    private static int GetInt(string name) => int.Parse(Get(name)!);
 }
 
 public abstract class HandlerBase
