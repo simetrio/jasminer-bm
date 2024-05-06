@@ -1,8 +1,10 @@
-const tgModalName = 'tg-banner-closed-5';
+function getTgModalName() {
+    return 'tg-banner-closed-' + new Date().getFullYear() + new Date().getMonth() + new Date().getDate();
+}
 
 function openTgModal() {
     window.setTimeout(() => {
-        var closed = localStorage.getItem(tgModalName);
+        var closed = localStorage.getItem(getTgModalName());
         if (!!closed) {
             return;
         }
@@ -12,5 +14,5 @@ function openTgModal() {
 }
 
 function closeTgModal() {
-    localStorage.setItem(tgModalName, 'true');
+    localStorage.setItem(getTgModalName(), 'true');
 }
