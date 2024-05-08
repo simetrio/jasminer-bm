@@ -210,8 +210,8 @@ public static class NewsSender
 
     private static string GetImg()
     {
-        const int imgsCount = 3;
-        return $"https://jasminer-bm.ru/img/tg-channel/tg-channel-chart-{DateTime.Now.Ticks % imgsCount + 1}.jpg";
+        const int imgsCount = 5;
+        return $"https://jasminer-bm.ru/img/tg-channel/tg-channel-news-{DateTime.Now.Ticks % imgsCount + 1}.jpg";
     }
 
     private static string Rerait(string mesasge)
