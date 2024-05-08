@@ -12,7 +12,8 @@ public class Handler : HandlerBase
 {
     protected override string HandleRequest(string body, RequestData? requestData)
     {
-        ChartSender.Send();
+        // ChartSender.Send();
+        NewsSender.Send();
         return "Ok";
     }
 }
@@ -41,7 +42,7 @@ public static class ChartSender
         var message = MessageTemplate.Format(BuildMessage(charts, minings));
         var img = _imgs[DateTime.Now.Ticks % _imgs.Length];
 
-        Telegram.SendMessage(message, img);
+        Telegram.SendChannelMessage(message, img);
     }
 
     private static string BuildMessage(Chart[] charts, Mining[] minings)
@@ -67,7 +68,7 @@ public static class ChartSender
             sb.AppendLine();
             sb.AppendLine($"🪙 {maningGroup.Key} - доход на {maningGroup.First().HashRate}");
             sb.AppendLine();
-          
+
             foreach (var mining in maningGroup.OrderByDescending(x => x.Value))
             {
                 sb.AppendLine($"{mining.Currency} - {mining.Value.ToString("C", CultureInfo.CreateSpecificCulture("en-US"))}");
@@ -188,6 +189,39 @@ public static class ChartSender
 
 #endregion
 
+#region NewsSender
+
+public static class NewsSender
+{
+    public static string[] _imgs =
+        {
+        "https://jasminer-bm.ru/img/tg-channel/tg-channel-chart-1.jpg",
+        "https://jasminer-bm.ru/img/tg-channel/tg-channel-chart-2.jpg",
+        "https://jasminer-bm.ru/img/tg-channel/tg-channel-chart-3.jpg",
+    };
+
+    public static void Send()
+    {
+        var message = Telegram.GetLastMessage();
+        if (string.IsNullOrEmpty(message))
+        {
+            return;
+        }
+
+        message = MessageTemplate.Format(Rerait(message));
+        var img = _imgs[DateTime.Now.Ticks % _imgs.Length];
+
+        Telegram.SendChannelMessage(message, img);
+    }
+
+    private static string Rerait(string mesasge)
+    {
+        return mesasge;
+    }
+}
+
+#endregion
+
 #region Common
 
 public static class MessageTemplate
@@ -226,7 +260,7 @@ public static class Telegram
         _botClient = new Lazy<TelegramBotClient>(() => new TelegramBotClient(Settings.TgBotToken));
     }
 
-    public static void SendMessage(string message, string img)
+    public static void SendChannelMessage(string message, string img)
     {
         _botClient.Value.SendPhotoAsync(
             chatId: Settings.TgChannelId,
@@ -236,6 +270,30 @@ public static class Telegram
         )
         .GetAwaiter()
         .GetResult();
+    }
+
+    public static void SendMessage(string message)
+    {
+        _botClient.Value.SendTextMessageAsync(
+            chatId: Settings.TgChatId,
+            text: message,
+            parseMode: ParseMode.MarkdownV2
+        )
+        .GetAwaiter()
+        .GetResult();
+    }
+
+    public static string? GetLastMessage()
+    {
+        var start = DateTime.UtcNow.AddHours(-1);
+        return (_botClient.Value.GetUpdatesAsync().GetAwaiter().GetResult())
+            .Select(x => x.Message!)
+            .Where(x => x.From!.Username == Settings.TgUserName)
+            .Where(x => x.ForwardFromMessageId != null)
+            .Where(x => x.Date >= start)
+            .OrderByDescending(x => x.Date)
+            .FirstOrDefault()?
+            .Caption;
     }
 }
 
@@ -248,6 +306,8 @@ public static class Settings
     public static string TgBodId => Get("TgBotId");
     public static string TgBotToken => Get("TgBotToken");
     public static string TgChannelId => Get("TgChannelId");
+    public static string TgChatId => Get("TgChatId");
+    public static string TgUserName => Get("TgUserName");
     public static int ChartHour => GetInt("ChartHour");
 
     private static string Get(string name) => Environment.GetEnvironmentVariable(name)!;
