@@ -207,7 +207,7 @@ public static class NewsSender
         Telegram.SendChannelMessage(message, img);
         Telegram.SendMessage("Отправил новость");
     }
-    
+
     private static string GetImg()
     {
         const int imgsCount = 3;
@@ -216,8 +216,74 @@ public static class NewsSender
 
     private static string Rerait(string mesasge)
     {
-        return mesasge;
+        var json = _jsonTemplate.Replace("{message}", FormatMessage(mesasge));
+
+        using var httpClient = new HttpClient();
+        httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {Settings.YaIamToken}");
+        httpClient.DefaultRequestHeaders.Add("x-folder-id", Settings.YaFolderId);
+
+        using var data = new StringContent(json, Encoding.UTF8, "application/json");
+
+        using var response = httpClient
+           .PostAsync("https://llm.api.cloud.yandex.net/foundationModels/v1/completion", data)
+           .GetAwaiter()
+           .GetResult();
+
+        response.EnsureSuccessStatusCode();
+
+        var jsonResponse = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+        var responseObject = JsonSerializer.Deserialize<YaResponse>(jsonResponse)!;
+
+        return responseObject.result.alternatives[0].message.text;
     }
+
+    private static string FormatMessage(string message)
+    {
+        return message
+            .Replace("\n", " ")
+            ;
+    }
+
+    private class YaResponse
+    {
+        public YaResponseResult result { get; set; }
+    }
+
+    private class YaResponseResult
+    {
+        public YaResponseAlternative[] alternatives { get; set; }
+    }
+
+    private class YaResponseAlternative
+    {
+        public YaResponseMessage message { get; set; }
+    }
+
+    private class YaResponseMessage
+    {
+        public string text { get; set; }
+    }
+
+    private const string _jsonTemplate = @"
+{
+  ""modelUri"": ""gpt://b1gn410mgu2s1lqpq2va/yandexgpt"",
+  ""messages"": [
+    {
+      ""text"": ""сделай рерайт текста"",
+      ""role"": ""system""
+    },
+    {
+      ""text"": ""{message}"",
+      ""role"": ""user""
+    }
+  ],
+  ""completionOptions"": {
+    ""stream"": false,
+    ""maxTokens"": 500,
+    ""temperature"": 0.3
+  }
+}
+    ";
 }
 
 #endregion
@@ -309,6 +375,8 @@ public static class Settings
     public static string TgChatId => Get("TgChatId");
     public static string TgUserName => Get("TgUserName");
     public static int ChartHour => GetInt("ChartHour");
+    public static string YaIamToken => Get("YaIamToken");
+    public static string YaFolderId => Get("YaFolderId");
 
     private static string Get(string name) => Environment.GetEnvironmentVariable(name)!;
     private static int GetInt(string name) => int.Parse(Get(name)!);
