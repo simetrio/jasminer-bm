@@ -36,6 +36,7 @@ public static class ChartSender
         var img = GetImg();
 
         Telegram.SendChannelMessage(message, img);
+        Telegram.SendMessage("Отправил котировки");
     }
 
     private static string GetImg()
@@ -204,6 +205,7 @@ public static class NewsSender
         var img = GetImg();
 
         Telegram.SendChannelMessage(message, img);
+        Telegram.SendMessage("Отправил новость");
     }
     
     private static string GetImg()
@@ -286,7 +288,7 @@ public static class Telegram
         var start = DateTime.UtcNow.AddHours(-1);
         return (_botClient.Value.GetUpdatesAsync().GetAwaiter().GetResult())
             .Select(x => x.Message!)
-            .Where(x => x.From!.Username == Settings.TgUserName)
+            .Where(x => x?.From?.Username == Settings.TgUserName)
             .Where(x => x.ForwardFromMessageId != null)
             .Where(x => x.Date >= start)
             .OrderByDescending(x => x.Date)
