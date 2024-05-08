@@ -22,13 +22,6 @@ public class Handler : HandlerBase
 
 public static class ChartSender
 {
-    public static string[] _imgs =
-    {
-        "https://jasminer-bm.ru/img/tg-channel/tg-channel-chart-1.jpg",
-        "https://jasminer-bm.ru/img/tg-channel/tg-channel-chart-2.jpg",
-        "https://jasminer-bm.ru/img/tg-channel/tg-channel-chart-3.jpg",
-    };
-
     public static void Send()
     {
         if (DateTime.UtcNow.Hour != Settings.ChartHour)
@@ -40,9 +33,15 @@ public static class ChartSender
         var minings = LoadMinings().ToArray();
 
         var message = MessageTemplate.Format(BuildMessage(charts, minings));
-        var img = _imgs[DateTime.Now.Ticks % _imgs.Length];
+        var img = GetImg();
 
         Telegram.SendChannelMessage(message, img);
+    }
+
+    private static string GetImg()
+    {
+        const int imgsCount = 3;
+        return $"https://jasminer-bm.ru/img/tg-channel/tg-channel-chart-{DateTime.Now.Ticks % imgsCount + 1}.jpg";
     }
 
     private static string BuildMessage(Chart[] charts, Mining[] minings)
@@ -193,13 +192,6 @@ public static class ChartSender
 
 public static class NewsSender
 {
-    public static string[] _imgs =
-        {
-        "https://jasminer-bm.ru/img/tg-channel/tg-channel-chart-1.jpg",
-        "https://jasminer-bm.ru/img/tg-channel/tg-channel-chart-2.jpg",
-        "https://jasminer-bm.ru/img/tg-channel/tg-channel-chart-3.jpg",
-    };
-
     public static void Send()
     {
         var message = Telegram.GetLastMessage();
@@ -209,9 +201,15 @@ public static class NewsSender
         }
 
         message = MessageTemplate.Format(Rerait(message));
-        var img = _imgs[DateTime.Now.Ticks % _imgs.Length];
+        var img = GetImg();
 
         Telegram.SendChannelMessage(message, img);
+    }
+    
+    private static string GetImg()
+    {
+        const int imgsCount = 3;
+        return $"https://jasminer-bm.ru/img/tg-channel/tg-channel-chart-{DateTime.Now.Ticks % imgsCount + 1}.jpg";
     }
 
     private static string Rerait(string mesasge)
