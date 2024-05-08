@@ -12,7 +12,7 @@ public class Handler : HandlerBase
 {
     protected override string HandleRequest(string body, RequestData? requestData)
     {
-        // ChartSender.Send();
+        ChartSender.Send();
         NewsSender.Send();
         return "Ok";
     }
